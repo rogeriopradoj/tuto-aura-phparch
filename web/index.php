@@ -4,8 +4,17 @@ require __DIR__ . '/../vendor/autoload.php';
 $router = (new \Aura\Router\RouterFactory)->newInstance();
 require __DIR__ . '/../bootstrap/routes.php';
 
+function cleanURL($request_uri)
+{
+    $path = rtrim(parse_url($request_uri, PHP_URL_PATH), '/');
+    if (strpos($path, '.') === false) {
+        return $path;
+    }
+    return substr($path, 0, strrpos($path, '.'));
+}
+
 $route = $router->match(
-    parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH),
+    cleanURL($_SERVER['REQUEST_URI']),
     $_SERVER
 );
 
